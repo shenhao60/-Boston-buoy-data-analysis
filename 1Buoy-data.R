@@ -26,7 +26,7 @@ for(i in years){
   if(ncol(D)==length(coln)){colnames(D)=coln}
   D=sapply(D, as.numeric)
   ##From Y1987 to Y1999, transfer the Year from 'XX' to '19XX'
-  D[D[,1]<100]=D[D[,1]<100]+1900
+  D[,1][D[,1]<100]=D[,1][D[,1]<100]+1900
   ##Create and combine to form final data set Buoy
   if(i==years[1]){Buoy=D}
   else{Buoy=rbind.data.frame(Buoy,D)}

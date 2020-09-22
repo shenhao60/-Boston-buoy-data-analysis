@@ -1,0 +1,165 @@
+---
+title: "Boston Buoy Data Analysis"
+author: "Hao"
+date: "2020/9/22"
+output:   
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+pacman::p_load(ggplot2,lubridate,stringr,tidyverse,ggpubr)
+load('Buoy.Rdata')
+```
+
+# Make URLs and read Data
+### Make URLs
+```{}
+url1="http://www.ndbc.noaa.gov/view_text_file.php?filename=mlrf1h"
+url2=".txt.gz&dir=data/historical/stdmet/"
+years=c(1987:2016)
+urls=paste0(url1,years,url2)
+Dnames=paste0('D',years)
+```
+
+### Read the data from the URLs
+```{}
+for(i in years) assign(Dnames[i-years[1]+1],read_table2(urls[i-years[1]+1]))
+coln=colnames(get(Dnames[1]))
+```
+
+# Combine, clean and transfer data
+### Combine data
+```{}
+for(i in years){
+  D=get(Dnames[i-years[1]+1])
+  # From Y2000 to Y2016, delete an additional variable of 'TIDE'
+  if(i %in% 2000:2016){D=select(D,-TIDE)}
+  # From Y2005 to Y2016, delete an additional variable of 'mm'
+  if(i %in% 2005:2016){D=select(D,-mm)}
+  # From Y2007 to Y2016, delete first row of units
+  if(i %in% 2007:2016){D=D[-1,]}
+  # Check and unify col names and set data type as 'numeric'
+  if(ncol(D)==length(coln)){colnames(D)=coln}
+  D=sapply(D, as.numeric)
+  # From Y1987 to Y1999, transfer the Year from 'XX' to '19XX'
+  D[,1][D[,1]<100]=D[,1][D[,1]<100]+1900
+  # Create and combine to form final data set Buoy
+  if(i==years[1]){Buoy=D}
+  else{Buoy=rbind.data.frame(Buoy,D)}
+}
+```
+
+### Transfer data
+```{}
+#Time transfer
+Buoy$DT=make_datetime(Buoy$YY,Buoy$MM,Buoy$DD,Buoy$hh)
+Buoy=Buoy[,-c(2:4)]
+save(Buoy,file='Buoy.Rdata')
+```
+
+# Prepare for analysis
+```{r}
+load('Buoy.Rdata')
+month=c('Jan','Feb','Mar','Apr','May','Jun',
+        'Jul','Aug','Sep','Oct','Nov','Dec')
+```
+
+# Analysis using 'Water Temperature'
+### Delete those lines with 999.0 and 99.0
+```{r}
+Buoy_W=Buoy[Buoy$WTMP<99,]
+```
+
+### Trend of average temperature per year
+```{r}
+Y_W=0
+for(i in 1988:2015){
+  Y_W[i-1987]=mean(Buoy_W$WTMP
+                   [date(Buoy_W$DT)>=make_date(i)&
+                       date(Buoy_W$DT)<make_date(i+1)]
+                   )
+}
+D_W=data.frame(Time=1988:2015,TMP=Y_W)
+P_W=ggplot(D_W,aes(Time,TMP))+
+  geom_point()+
+  geom_smooth(method="lm",formula=y~x)+
+  labs(title='Yearly Trend of Water Temperature', 
+        x="year", y='Yearly Average Water Temperature')
+P_W
+```
+
+### Trend of monthly average temperature per 
+```{r}
+M_W=0
+P_WM_name=str_c('P_W',1:12,sep='')
+for(j in 1:12){
+  for(i in 1988:2015){
+    M_W[i-1987]=mean(Buoy_W$WTMP
+                     [date(Buoy_W$DT)>=
+                         make_date(i,j)&
+                         date(Buoy_W$DT)<
+                         make_date(ifelse(j==12,i+1,i),
+                                   ifelse(j==12,1,j+1))])
+  }
+  D_W=data.frame(Time=1988:2015,TMP=M_W)
+  assign(P_WM_name[j],
+         ggplot(D_W,aes(Time,TMP))+
+         geom_point()+
+         geom_smooth(method="lm",formula=y~x)+
+         labs(title=month[j],x="year",y="Mean WTMP"))
+}
+ggarrange(P_W1,P_W2,P_W3,P_W4,P_W5,P_W6,ncol=3,nrow=2)
+ggarrange(P_W7,P_W8,P_W9,P_W10,P_W11,P_W12,ncol=3,nrow=2)
+```
+
+# Analysis using 'Air Temperature'
+### Delete those lines with 999.0 and 99.0
+```{r}
+Buoy_A=Buoy[Buoy$ATMP<99,]
+```
+
+### Trend of average temperature per year
+```{r}
+Y_A=0
+for(i in 1988:2015){
+  Y_A[i-1987]=mean(Buoy_A$ATMP
+                   [date(Buoy_A$DT)>=make_date(i)&
+                       date(Buoy_A$DT)<make_date(i+1)])
+}
+D_A=data.frame(Time=1988:2015,TMP=Y_A)
+P_A=ggplot(D_A,aes(Time,TMP))+
+  geom_point()+
+  geom_smooth(method="lm",formula=y~x)+
+  labs(title='Yearly Trend of Air Temperature', 
+        x="year", y='Yearly Average Air Temperature')
+P_A
+```
+
+### Trend of monthly average temperature per year
+```{r}
+M_A=0
+P_AM_name=str_c('P_A',1:12,sep='')
+for(j in 1:12){
+  for(i in 1988:2015){
+    M_A[i-1987]=mean(Buoy_A$ATMP
+                     [date(Buoy_A$DT)>=
+                         make_date(i,j)&
+                         date(Buoy_A$DT)<
+                         make_date(ifelse(j==12,i+1,i),
+                                   ifelse(j==12,1,j+1))])
+  }
+  D_A=data.frame(Time=1988:2015,TMP=M_A)
+  assign(P_AM_name[j],
+         ggplot(D_A,aes(Time,TMP))+
+         geom_point()+
+         geom_smooth(method="lm",formula=y~x)+
+         labs(title=month[j],x="year",y="Mean ATMP"))
+}
+ggarrange(P_A1,P_A2,P_A3,P_A4,P_A5,P_A6,ncol=3,nrow=2)
+ggarrange(P_A7,P_A8,P_A9,P_A10,P_A11,P_A12,ncol=3,nrow=2)
+```
+
+# Conclusion
+There is the evidence of global warming. The annually average water and air temperature are raising. 8 out of 12 months per year shows annually  increases in average water and air temperature.
