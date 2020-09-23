@@ -9,7 +9,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-pacman::p_load(ggplot2,lubridate,stringr,tidyverse,ggpubr)
+pacman::p_load(ggplot2,lubridate,stringr,tidyverse,ggpubr,knitr)
 load('Buoy.Rdata')
 ```
 
@@ -31,9 +31,8 @@ As a result, from annual perspective, the analysis revealed that both the annual
 
 Initially, we thought this would be the simplest process, since Professor Haviland had uploaded Web crawler script. However, due to different formats and different amount of variables, the code needed to improve.
 
-At first, we chose to separate the single 'for' loop into two, one for downloading data from NOAA and one to deal with formats issues, which has two advantages. First, 
+At first, we chose to separate the single 'for' loop into two, one for downloading data from NOAA and one to deal with formats issues, which has two advantages. First, it is helpful to deal with network issues, especially when try to connect from China. No timeout will interrupt other process. Second, it is much more easier to compare difference of data from different years, which is necessary for further combination.
 
-### Read 
 ```{}
 url1="http://www.ndbc.noaa.gov/view_text_file.php?filename=mlrf1h"
 url2=".txt.gz&dir=data/historical/stdmet/"
@@ -41,12 +40,12 @@ years=c(1987:2016)
 urls=paste0(url1,years,url2)
 Dnames=paste0('D',years)
 for(i in years) assign(Dnames[i-years[1]+1],read_table2(urls[i-years[1]+1]))
-coln=colnames(get(Dnames[1]))
 ```
 
 # Combine, clean and transfer data
 ### Combine data
 ```{}
+coln=colnames(get(Dnames[1]))
 for(i in years){
   D=get(Dnames[i-years[1]+1])
   # From Y2000 to Y2016, delete an additional variable of 'TIDE'
@@ -65,6 +64,9 @@ for(i in years){
   else{Buoy=rbind.data.frame(Buoy,D)}
 }
 ```
+```{r}
+kable(Buoy[1:5, ],caption="Buoy")
+```
 
 ### Transfer data
 ```{}
@@ -75,7 +77,7 @@ save(Buoy,file='Buoy.Rdata')
 ```
 
 # Prepare for analysis
-```{}
+```{r}
 load('Buoy.Rdata')
 month=c('Jan','Feb','Mar','Apr','May','Jun',
         'Jul','Aug','Sep','Oct','Nov','Dec')
@@ -107,7 +109,7 @@ P_W=ggplot(D_W,aes(Time,TMP))+
 P_W
 ```
 
-### Trend of monthly average temperature per 
+### Trend of monthly average temperature per year
 ```{r}
 M_W=0
 P_WM_name=str_c('P_W',1:12,sep='')
