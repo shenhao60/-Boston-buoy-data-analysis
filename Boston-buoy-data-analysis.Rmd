@@ -16,7 +16,7 @@ load('Buoy.Rdata')
 
 # Summary
 
-In this report, we formed conclusion that there is evidence showing global warming after we analyzed the Boston Buoy Data set from 1987 to 2016, with total 246,245 observations. The whole analysis process is consisted by four parts:
+In this report, we concluded that there is evidence showing global warming in the Boston buoy data set from 1987 to 2016, with total 246,245 observations. The whole analysis process is consisted by four parts:
 
 * Read data from URLs of NOAA and combine into a single data.frame.
 
@@ -26,18 +26,18 @@ In this report, we formed conclusion that there is evidence showing global warmi
 
 * Perform data analysis with ATMP *(Air Temperature)*
 
-As a result, from annual perspective, the analysis revealed that both the annual mean water temperature and air temperature shows slightly upward trends (0.005413 $^{\circ}C/year$, 0.003434 $^{\circ}C/year$ respectively) as indications of global warming. Then, from monthly perspective, 8 out of 12 months shows annually increasing trends on average water (Jan, Feb, Jul, Nov.) and air temperature (Jan, Feb, Mar, Nov). Besides, the upward trends of temperature in summer and downward trends of temperature in winter indicate an increase in extreme weather which is also a indicator of global warming.
+As a result, from annual perspective, the analysis revealed that both the annual mean water temperature and air temperature shows slightly upward trends (0.005413℃/year, 0.003434℃/year respectively) as indications of global warming. Then, from monthly perspective, 8 out of 12 months shows annually increasing trends on average water (Jan, Feb, Jul, Nov.) and air temperature (Jan, Feb, Mar, Nov). Besides, the upward trends of temperature in summer and downward trends of temperature in winter indicate an increase in extreme weather which is also a indicator of global warming.
 
 # Data reading and combination
 ### Read data from NOAA
 
-Initially, we thought this would be the simplest process, since Professor Haviland had uploaded Web crawler script. However, due to different formats and different amount of variables, the code need to improve.
+Initially, we thought this would be the simplest process, since Professor Haviland had uploaded Web crawler script. However, due to different formats and different amount of variables, the code need improvements.
 
-At first, we choose to separate the single `for` loop into two, one for downloading data from NOAA and one to deal with formats issues, which has two advantages. First, it is helpful to deal with network issues, especially when try to connect from China. No timeout will interrupt other process. Second, it is much more easier to compare difference of data from different years, which is necessary for further combination.
+At first, we choose to separate the single `for` loop into two, one for downloading data from NOAA and one to deal with formats issues, which has two advantages. First, it is helpful to deal with network issues, especially when try to connect from China, so that no timeout warning will interrupt other process. Second, it is easier to compare the difference of data formats from year to year, which is necessary for further combination.
 
-Nonetheless, using `read.table()` function for reading data from NOAA is not a good choice, because the NOAA data sets are not totally formal. Normally there is only 1 space between 2 columns, but in some cases 2 spaces will occur and the read.table() cannot handle such things. It will combine these columns separated by 2 spaces into 1 column as the outcome. Luckily, we can just use `read_table2()` function to solve this problem.
+Nonetheless, using `read.table()` function for reading data from NOAA is not a good choice, because the NOAA data sets are not totally formal. Normally there is only 1 space between 2 columns, but in some cases 2 spaces will occur. The read.table() cannot handle such things well, since It will combine these columns separated by 2 spaces into 1 column as the outcome. Luckily, we can just use `read_table2()` function to solve this problem.
 
-As a result, in this step, we will get 30 tables with total 246,245 observations and 16 to 18 variables depending on different years.
+As a result, in this step, we get 30 tables with total 246,245 observations and 16 to 18 variables depending on different years.
 ```{r Read data from NOAA, eval=FALSE, tidy=TRUE}
 url1="http://www.ndbc.noaa.gov/view_text_file.php?filename=mlrf1h"
 url2=".txt.gz&dir=data/historical/stdmet/"
@@ -108,7 +108,7 @@ In analysis process, we will use two variables WTMP *(Water Temperature)* and AT
 
 Then, because we need to mark month of analysis results for several times, it will be clear to set it at first.
 
-Last, in analysis, we need preset Y_W and Y_A to contain annual average WTMP and ATMP data. Also, we need preset M_W and M_A to contain monthly average WTMP and ATMP data.
+Last, in analysis, we need preset Y_W and Y_A to store annual average WTMP and ATMP data. Also, we preset M_W and M_A to store monthly average WTMP and ATMP data.
 
 ```{r Prepare for analysis, tidy=TRUE}
 #Remove Display data
@@ -126,7 +126,7 @@ M_A=0
 # Data analysis with WTMP
 ### Trend of annually average water temperature
 
-As a common sense, the most direct evidence of global warming is that the temperature of the Earth has a upward trend. So, from all the variables listed above, only WTMP and ATMP are used. As for other wind or tide data their relations with global warming are not clear.
+As a common sense, the most direct evidence of global warming is the temperature of the Earth has a upward trend. So, from all the variables listed above, only WTMP and ATMP are used. As for other wind or tide data their relations with global warming are not clear.
 
 Also as a common sense, the temperature varies from day to night and from winter to summer. If we want to use all the data points for analysis, moving average to eliminate cycle fluctuation is required. However, considering we just need to find evidence or a sense of global warming, which only requires rough estimates with large uncertainty, annual mean is a good choice. It can not only eliminate cycle fluctuation but also easy to calculate and it can also tolerate 1% deletion of NA data points.
 
@@ -152,11 +152,11 @@ print(R_W)
 P_W
 ```
 
-As the simple linear regression model shows the slope of fitted line is 0.005413 which represents a slightly upward trend of buoy water temperature indicating global warming and can be interpreted as buoy water temperature will increase by 0.005413 $^{\circ}C$ per year. The picture also shows the same result.
+As the simple linear regression model shows the slope of fitted line is 0.005413 which represents a slightly upward trend of buoy water temperature indicating global warming and can be interpreted as buoy water temperature will increase by 0.005413℃ per year. The picture also shows the same result.
 
 ### Trends of monthly average water temperature
 
-Now we found some evidence, but the slope or annual increase of 0.005413 $^{\circ}C$ is so samll that is hard to convince us. We need to separate this slope so that may be more information will be reveal. And we choose to further analyze the data from a month perspective.
+Now we found some evidence, but the slope or annual increase of 0.005413℃ is so samll that is hard to convince us. We need to separate this slope so that may be more information will be reveal. And we choose to further analyze the data from a month perspective.
 
 Here we consider what's the trend of temperature of each month changed during the past 30 years. For example, for June, we want to explore how the June temperature of each year changes from 1987 to 2015. So we use another `for` loop to repeat computation and use loop indicators of j, i to represent the time point of month, year respectively for data selection. Then we use `ggplot2()` to present results with month's labels and `ggarrange()` to layout.
 
@@ -214,7 +214,7 @@ print(R_A)
 P_A
 ```
 
-As the simple linear regression model shows the slope of fitted line is 0.003434 which also represents a slightly upward trend of buoy air temperature indicating global warming and can also be interpreted as buoy air temperature will increase by 0.003434 $^{\circ}C$ per year. The picture no doubtly shows the same result.
+As the simple linear regression model shows the slope of fitted line is 0.003434 which also represents a slightly upward trend of buoy air temperature indicating global warming and can also be interpreted as buoy air temperature will increase by 0.003434℃ per year. The picture no doubly shows the same result.
 
 ### Trends of monthly average air temperature
 ```{r Trends of monthly average air temperature, tidy=TRUE}
