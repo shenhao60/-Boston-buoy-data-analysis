@@ -1,6 +1,6 @@
 # Summary
 
-In this report, we concluded that there is evidence showing global warming in the Boston buoy data set from 1987 to 2016, with total 246,245 observations. The whole analysis process is consisted by four parts:
+In this report, we found evidence showing global warming in the Boston buoy data set from 1987 to 2016, with total 246,245 observations. The whole analysis process is consisted by four parts:
 
 * Read data from URLs of NOAA and combine into a single data.frame.
 
