@@ -12,4 +12,4 @@ In this report, we found evidence showing global warming in the Boston buoy data
 
 As a result, from annual perspective, the analysis revealed that both the annual mean water temperature and air temperature shows slightly upward trends (0.005413℃/year, 0.003434℃/year respectively) as indications of global warming. Then, from monthly perspective, 8 out of 12 months shows annually increasing trends on average water (Jan, Feb, Jul, Nov.) and air temperature (Jan, Feb, Mar, Nov). Besides, the upward trends of temperature in summer and downward trends of temperature in winter indicate an increase in extreme weather which is also a indicator of global warming.
 
-Open the report in [HTML](Boston-buoy-data-analysis.html) or [PDF](Boston-buoy-data-analysis.pdf).
+Open the report in [PDF](Boston-buoy-data-analysis.pdf).
