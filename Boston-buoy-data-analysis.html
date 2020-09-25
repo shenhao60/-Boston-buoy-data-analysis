@@ -1642,7 +1642,7 @@ summary {
 
 <div id="summary" class="section level1">
 <h1>Summary</h1>
-<p>In this report, we concluded that there is evidence showing global warming in the Boston buoy data set from 1987 to 2016, with total 246,245 observations. The whole analysis process is consisted by four parts:</p>
+<p>In this report, we found evidence showing global warming in the Boston buoy data set from 1987 to 2016, with total 246,245 observations. The whole analysis process is consisted by four parts:</p>
 <ul>
 <li><p>Read data from URLs of NOAA and combine into a single data.frame.</p></li>
 <li><p>Transform separated time variables into one and prepare for analysis.</p></li>
@@ -1834,10 +1834,7 @@ M_A=0</code></pre>
 <p>So, firstly we use <code>for</code> loop to compute annual mean temperature. Here, we use time data type for data selection and <code>make_date()</code> function to transfer loop indicator into different time points that can separate the whole 30 years data into annually. You may notice here we only choose the data from 1988 to 2015 which only has 28 years. This is because the data of 1988 only contains data collected in winter and data of 2016 only has about 75% data points compared to other years, which are both incomplete and need to be removed.</p>
 <pre class="r"><code>#Loop for annual mean temperature calculation
 for(i in 1988:2015){
-  Y_W[i-1987]=mean(Buoy_W$WTMP
-                   [date(Buoy_W$DT)&gt;=make_date(i)&amp;
-                       date(Buoy_W$DT)&lt;make_date(i+1)]
-                   )
+  Y_W[i-1987]=mean(Buoy_W$WTMP[year(Buoy_W$DT)==i])
 }
 #Do regression and present results
 D_W=data.frame(Time=1988:2015,TMP=Y_W)
@@ -1869,12 +1866,7 @@ print(R_W)</code></pre>
 for(j in 1:12){
   #Inner loop for annual mean temperature of each month calculation
   for(i in 1988:2015){
-    M_W[i-1987]=mean(Buoy_W$WTMP
-                     [date(Buoy_W$DT)&gt;=
-                         make_date(i,j)&amp;
-                         date(Buoy_W$DT)&lt;
-                         make_date(ifelse(j==12,i+1,i),
-                                   ifelse(j==12,1,j+1))])
+    M_W[i-1987]=mean(Buoy_W$WTMP[year(Buoy_W$DT)==i&amp;month(Buoy_W$DT)==j])
   }
   ##Do regression and present results of each month
   D_W=data.frame(Time=1988:2015,TMP=M_W)
@@ -1899,9 +1891,7 @@ ggarrange(P_W1,P_W2,P_W3,P_W4,P_W5,P_W6,ncol=3,nrow=2)</code></pre>
 <p>Actually, in the above part we have finished all the analysis and formed a conclusion there is evidence showing global warming. However, since there is also a variable about temperature which is about air and since we want to further confirm our conclusion, we also perform the same analysis and presentation on ATMP as we have done on WTMP.</p>
 <pre class="r"><code>#Loop for annual mean temperature calculation
 for(i in 1988:2015){
-  Y_A[i-1987]=mean(Buoy_A$ATMP
-                   [date(Buoy_A$DT)&gt;=make_date(i)&amp;
-                       date(Buoy_A$DT)&lt;make_date(i+1)])
+  Y_A[i-1987]=mean(Buoy_A$ATMP[year(Buoy_A$DT)==i])
 }
 #Do regression and present results
 D_A=data.frame(Time=1988:2015,TMP=Y_A)
@@ -1930,12 +1920,7 @@ print(R_A)</code></pre>
 for(j in 1:12){
   #Inner loop for annual mean temperature of each month calculation
   for(i in 1988:2015){
-    M_A[i-1987]=mean(Buoy_A$ATMP
-                     [date(Buoy_A$DT)&gt;=
-                         make_date(i,j)&amp;
-                         date(Buoy_A$DT)&lt;
-                         make_date(ifelse(j==12,i+1,i),
-                                   ifelse(j==12,1,j+1))])
+    M_A[i-1987]=mean(Buoy_A$ATMP[year(Buoy_A$DT)==i&amp;month(Buoy_A$DT)==j])
   }
   ##Do regression and present results of each month
   D_A=data.frame(Time=1988:2015,TMP=M_A)

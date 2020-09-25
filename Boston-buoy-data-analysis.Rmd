@@ -135,10 +135,7 @@ So, firstly we use `for` loop to compute annual mean temperature. Here, we use t
 ```{r Trend of annually average water temperature, tidy=TRUE}
 #Loop for annual mean temperature calculation
 for(i in 1988:2015){
-  Y_W[i-1987]=mean(Buoy_W$WTMP
-                   [date(Buoy_W$DT)>=make_date(i)&
-                       date(Buoy_W$DT)<make_date(i+1)]
-                   )
+  Y_W[i-1987]=mean(Buoy_W$WTMP[year(Buoy_W$DT)==i])
 }
 #Do regression and present results
 D_W=data.frame(Time=1988:2015,TMP=Y_W)
@@ -168,12 +165,7 @@ P_WM_name=str_c('P_W',1:12,sep='')
 for(j in 1:12){
   #Inner loop for annual mean temperature of each month calculation
   for(i in 1988:2015){
-    M_W[i-1987]=mean(Buoy_W$WTMP
-                     [date(Buoy_W$DT)>=
-                         make_date(i,j)&
-                         date(Buoy_W$DT)<
-                         make_date(ifelse(j==12,i+1,i),
-                                   ifelse(j==12,1,j+1))])
+    M_W[i-1987]=mean(Buoy_W$WTMP[year(Buoy_W$DT)==i&month(Buoy_W$DT)==j])
   }
   ##Do regression and present results of each month
   D_W=data.frame(Time=1988:2015,TMP=M_W)
@@ -198,9 +190,7 @@ Actually, in the above part we have finished all the analysis and formed a concl
 ```{r Trend of annually average air temperature, tidy=TRUE}
 #Loop for annual mean temperature calculation
 for(i in 1988:2015){
-  Y_A[i-1987]=mean(Buoy_A$ATMP
-                   [date(Buoy_A$DT)>=make_date(i)&
-                       date(Buoy_A$DT)<make_date(i+1)])
+  Y_A[i-1987]=mean(Buoy_A$ATMP[year(Buoy_A$DT)==i])
 }
 #Do regression and present results
 D_A=data.frame(Time=1988:2015,TMP=Y_A)
@@ -223,12 +213,7 @@ P_AM_name=str_c('P_A',1:12,sep='')
 for(j in 1:12){
   #Inner loop for annual mean temperature of each month calculation
   for(i in 1988:2015){
-    M_A[i-1987]=mean(Buoy_A$ATMP
-                     [date(Buoy_A$DT)>=
-                         make_date(i,j)&
-                         date(Buoy_A$DT)<
-                         make_date(ifelse(j==12,i+1,i),
-                                   ifelse(j==12,1,j+1))])
+    M_A[i-1987]=mean(Buoy_A$ATMP[year(Buoy_A$DT)==i&month(Buoy_A$DT)==j])
   }
   ##Do regression and present results of each month
   D_A=data.frame(Time=1988:2015,TMP=M_A)
