@@ -16,7 +16,7 @@ load('Buoy.Rdata')
 
 # Summary
 
-In this report, we found evidence showing global warming in the Boston buoy data set from 1987 to 2016, with total 246,245 observations. The whole analysis process is consisted by four parts:
+In this report, we found evidence showing global warming in the Boston Buoy Data Set[<sup>1</sup>](#refer-anchor-1) from 1987 to 2016, with total 246,245 observations. The whole analysis process is consisted by four parts:
 
 * Read data from URLs of NOAA and combine into a single data.frame.
 
@@ -237,3 +237,8 @@ In conclusion, there are three evidence both from water temperature and air temp
 * Most months in the past 28 years showed increases in temperature.
 
 * Upward and downward trends of temperature in summer and winter indicate more extreme weather, a phenomenon caused by global warming.
+
+# Reference
+
+<div id="refer-anchor-1"></div>
+[1] [National Data Buoy Center](http://www.ndbc.noaa.gov/stattion_page.php?station=44013)
