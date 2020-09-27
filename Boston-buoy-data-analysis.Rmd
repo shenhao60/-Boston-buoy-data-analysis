@@ -230,6 +230,8 @@ ggarrange(P_A7,P_A8,P_A9,P_A10,P_A11,P_A12,ncol=3,nrow=2)
 
 Also, as the result shows, except January, February, March and November, other 8 months all display upward trends in air temperature as an indicator of global warming. The plots also show an downward trend in winter time and upward trend in summer time which means the range of annual temperature is becoming large which means more extreme weather, a phenomenon caused by global warming.
 
+# Conclusion
+
 In conclusion, there are three evidence both from water temperature and air temperature showing the existence of global warming:
 
 * Slightly positive slopes indicate temperature increased each year slightly.
@@ -237,6 +239,14 @@ In conclusion, there are three evidence both from water temperature and air temp
 * Most months in the past 28 years showed increases in temperature.
 
 * Upward and downward trends of temperature in summer and winter indicate more extreme weather, a phenomenon caused by global warming.
+
+# Curiosity
+
+Current data analysis is based on one buoy only. Even it shows a slight raising trend in temperature, but whether can we therefore infer the global warming is still not clear. We need additional buoy data from different locations globally to further confirm the conclusion.
+
+The whole analysis step only consider the mean temperature of the data and many other features like variance and extreme temperature need to be explore in further research.
+
+The data we used is from 1987 to 2016. Indeed this period of time shows a growing trend in temperature, but without data before 1987 we cannot verify that this trend shows global warming or it is only a trend of fluctuation of global cooling. We believe data before 1987 is need for further research.
 
 # Reference
 
